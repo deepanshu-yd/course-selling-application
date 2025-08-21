@@ -6,24 +6,37 @@ const app = express();
 
 // login, signup, purchase routes
 
-app.post("/signup", function (req, res){
-
+app.post("/user/signup", function (req, res){
+    res.json({
+        message: "signup endpoint"
+    })
 });
 
-app.post("/signin", function(req, res){
-
+app.post("/user/signin", function(req, res){
+    res.json({
+        message: "signin endpoint"
+    })
 });
 
-app.post("/purchase-course", function(req, res){
-
+// lets user purchase a course
+app.post("/user/purchases", function(req, res){
+    res.json({
+        message: "purchase course endpoint"
+    })
 });
 
-app.get("/all-course", function(req, res){
-
+// list all courses
+app.get("/course/purchase", function(req, res){
+    res.json({
+        message: "list all courses endpoint"
+    })
 });
 
-app.get("purchased-courses", function(req, res){
-
+// lists all the course purchased by user
+app.get("courses", function(req, res){
+    res.json({
+        message: "my courses endpoint"
+    })
 });
 
 app.listen(3000);
