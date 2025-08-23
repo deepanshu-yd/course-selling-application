@@ -34,7 +34,7 @@ adminRouter.post("/signup", async function(req, res){
         // Generate JWT token
         const token = jwt.sign(
             { adminId: newAdmin._id, email: newAdmin.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_ADMIN_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -97,7 +97,7 @@ adminRouter.post("/signin", async function(req, res){
         // Generate JWT token
         const token = jwt.sign(
             { adminId: admin._id, email: admin.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_ADMIN_SECRET,
             { expiresIn: '24h' }
         );
 

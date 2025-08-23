@@ -34,7 +34,7 @@ userRouter.post("/signup", async function(req, res){
         // Generate JWT token
         const token = jwt.sign(
             { userId: newUser._id, email: newUser.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_USER_SECRET,
             { expiresIn: '24h' }
         );
 
@@ -97,7 +97,7 @@ userRouter.post("/signin", async function(req, res){
         // Generate JWT token
         const token = jwt.sign(
             { userId: user._id, email: user.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_USER_SECRET,
             { expiresIn: '24h' }
         );
 

@@ -13,8 +13,8 @@ function userMiddleware(req, res, next) {
         // Remove 'Bearer ' prefix if present
         const cleanToken = token.startsWith('Bearer ') ? token.slice(7) : token;
 
-        // Verify the token
-        const decoded = jwt.verify(cleanToken, process.env.JWT_SECRET);
+        // Verify the token using user-specific secret
+        const decoded = jwt.verify(cleanToken, process.env.JWT_USER_SECRET);
 
         // Add user info to request object
         req.userId = decoded.userId;
@@ -41,8 +41,8 @@ function adminMiddleware(req, res, next) {
         // Remove 'Bearer ' prefix if present
         const cleanToken = token.startsWith('Bearer ') ? token.slice(7) : token;
 
-        // Verify the token
-        const decoded = jwt.verify(cleanToken, process.env.JWT_SECRET);
+        // Verify the token using admin-specific secret
+        const decoded = jwt.verify(cleanToken, process.env.JWT_ADMIN_SECRET);
 
         // Add admin info to request object
         req.adminId = decoded.adminId;
