@@ -3,7 +3,7 @@ const { adminModel } = require("../db");
 const { z } = require("zod");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { adminMiddleware } = require("../middleware/auth");
+const { adminMiddleware } = require("../middleware/(to remove)-auth");
 
 const adminRouter = Router();
 
