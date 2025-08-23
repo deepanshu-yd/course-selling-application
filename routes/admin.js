@@ -1,34 +1,147 @@
 const { Router } = require("express");
-const adminRouter = Router();
 const { adminModel } = require("../db");
+const { z } = require("zod");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { adminMiddleware } = require("../middleware/auth");
 
-adminRouter.post("/signup", function(req, res){
+const adminRouter = Router();
+
+// Zod validation schema for admin signup
+const adminSignupSchema = z.object({
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required")
+});
+
+adminRouter.post("/signup", async function(req, res){
+    try {
+        // Zod validation
+        const { email, password, firstName, lastName } = adminSignupSchema.parse(req.body);
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create admin in database
+        const newAdmin = await adminModel.create({
+            email: email,
+            password: hashedPassword,
+            firstName: firstName,
+            lastName: lastName
+        });
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { adminId: newAdmin._id, email: newAdmin.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            message: "Admin signup succeeded",
+            token: token
+        });
+    } catch(error) {
+        // Handle Zod validation errors
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({
+                message: "Validation error",
+                errors: error.errors
+            });
+        }
+
+        // Handle duplicate email error
+        if (error.code === 11000) {
+            return res.status(400).json({
+                message: "Email already exists"
+            });
+        }
+
+        // Handle other errors
+        res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+});
+
+// Zod validation schema for admin signin
+const adminSigninSchema = z.object({
+    email: z.string().email("Invalid email format"),
+    password: z.string().min(1, "Password is required")
+});
+
+adminRouter.post("/signin", async function(req, res){
+    try {
+        // Zod validation
+        const { email, password } = adminSigninSchema.parse(req.body);
+
+        // Find admin in database
+        const admin = await adminModel.findOne({ email: email });
+
+        if (!admin) {
+            return res.status(400).json({
+                message: "Invalid credentials"
+            });
+        }
+
+        // Compare password with hashed password
+        const isPasswordValid = await bcrypt.compare(password, admin.password);
+
+        if (!isPasswordValid) {
+            return res.status(400).json({
+                message: "Invalid credentials"
+            });
+        }
+
+        // Generate JWT token
+        const token = jwt.sign(
+            { adminId: admin._id, email: admin.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.json({
+            message: "Admin signin successful",
+            token: token
+        });
+    } catch(error) {
+        // Handle Zod validation errors
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({
+                message: "Validation error",
+                errors: error.errors
+            });
+        }
+
+        // Handle other errors
+        res.status(500).json({
+            message: "Internal server error"
+        });
+    }
+});
+
+adminRouter.post("/course", adminMiddleware, function(req, res){
     res.json({
-        message: "signup endpoint"
+        message: "create course endpoint",
+        adminId: req.adminId,
+        adminEmail: req.adminEmail
     })
 });
 
-adminRouter.post("/signin", function(req, res){
+adminRouter.put("/course", adminMiddleware, function(req, res){
     res.json({
-        message: "signin endpoint"
+        message: "update course endpoint",
+        adminId: req.adminId,
+        adminEmail: req.adminEmail
     })
 });
 
-adminRouter.post("/course", function(req, res){
+adminRouter.get("/course/bulk", adminMiddleware, function(req, res){
     res.json({
-        message: "signin endpoint"
-    })
-});
-
-adminRouter.put("/course", function(req, res){
-    res.json({
-        message: "signin endpoint"
-    })
-});
-
-adminRouter.get("/course/bulk", function(req, res){
-    res.json({
-        message: "signin endpoint"
+        message: "get all courses endpoint",
+        adminId: req.adminId,
+        adminEmail: req.adminEmail
     })
 });
 

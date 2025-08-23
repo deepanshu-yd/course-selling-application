@@ -5,11 +5,11 @@ const mongoose = require("mongoose");
 const { userRouter } = require("./routes/user");
 const { courseRouter } = require("./routes/course");
 const { adminRouter } = require("./routes/admin");
+const app = express()
 require("./db");
+app.use(express.json());
 
 // bcrypt for password hashing, zod to validate the user input, jsonwebtoken to create a jwt for a user
-
-const app = express();
 
 app.use(express.json());
 app.use("/api/v1/user", userRouter);
