@@ -5,7 +5,9 @@ const mongoose = require("mongoose");
 const { userRouter } = require("./routes/user");
 const { courseRouter } = require("./routes/course");
 const { adminRouter } = require("./routes/admin");
-require("./db"); // Initialize database connection
+require("./db");
+
+// bcrypt for password hashing, zod to validate the user input, jsonwebtoken to create a jwt for a user
 
 const app = express();
 
