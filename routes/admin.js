@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { adminModel } = require("../db");
+const { adminModel, courseModel } = require("../db");
 const { z } = require("zod");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -121,7 +121,16 @@ adminRouter.post("/signin", async function(req, res){
     }
 });
 
-adminRouter.post("/course", adminMiddleware, function(req, res){
+adminRouter.post("/course", adminMiddleware, async function(req, res){
+    const adminId = req.userId;
+
+    const { title, description, imageUrl, price } = req.body;
+
+    // watch the video of "Creating a web3 saas in 6 hours" to understand how to let users upload their and not ask for a url
+    await courseModel.create({
+        title, description, imageUrl, price, creatorId: adminId
+    })
+
     res.json({
         message: "create course endpoint",
         adminId: req.adminId,
