@@ -16,3 +16,7 @@ Good to haves
 - Add a rate limiting middleware
 - Frontend in ejs (low pri)
 - Frontend in React
+
+### website ui inspirations 
+- [hygen website](hygen.com)
+- [stripe website](stripe.com)
