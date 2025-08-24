@@ -3,7 +3,7 @@ const { userModel } = require("../db");
 const { z } = require("zod");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { userMiddleware } = require("../middleware/(to remove)-auth");
+const { userMiddleware } = require("../middleware/auth");
 
 const userRouter = Router();
 
