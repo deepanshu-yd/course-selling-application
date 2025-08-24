@@ -126,15 +126,14 @@ adminRouter.post("/course", adminMiddleware, async function(req, res){
 
     const { title, description, imageUrl, price } = req.body;
 
-    // watch the video of "Creating a web3 saas in 6 hours" to understand how to let users upload their and not ask for a url
-    await courseModel.create({
+    // watch the video of "Creating a web3 saas in 6 hours" to understand how to let users upload their image and not ask for an imageUrl
+    const course = await courseModel.create({
         title, description, imageUrl, price, creatorId: adminId
     })
 
     res.json({
-        message: "create course endpoint",
-        adminId: req.adminId,
-        adminEmail: req.adminEmail
+        message: "course created",
+        courseId: course._id
     })
 });
 
